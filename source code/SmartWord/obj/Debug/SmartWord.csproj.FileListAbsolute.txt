@@ -1,0 +1,9 @@
+D:\gitHubProjects\Now\SmartWord\SmartWord\bin\Debug\SmartWord.exe.config
+D:\gitHubProjects\Now\SmartWord\SmartWord\bin\Debug\SmartWord.exe
+D:\gitHubProjects\Now\SmartWord\SmartWord\bin\Debug\SmartWord.pdb
+D:\gitHubProjects\Now\SmartWord\SmartWord\obj\Debug\SmartWord.csprojAssemblyReference.cache
+D:\gitHubProjects\Now\SmartWord\SmartWord\obj\Debug\SmartWord.Form1.resources
+D:\gitHubProjects\Now\SmartWord\SmartWord\obj\Debug\SmartWord.Properties.Resources.resources
+D:\gitHubProjects\Now\SmartWord\SmartWord\obj\Debug\SmartWord.csproj.GenerateResource.cache
+D:\gitHubProjects\Now\SmartWord\SmartWord\obj\Debug\SmartWord.exe
+D:\gitHubProjects\Now\SmartWord\SmartWord\obj\Debug\SmartWord.pdb
