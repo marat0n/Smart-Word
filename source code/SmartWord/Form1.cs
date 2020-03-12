@@ -12,98 +12,97 @@ using static System.Array;
 
 namespace SmartWord
 {
-    public partial class Form1 : Form
+    public partial class FormMain : Form
     {
-        List<TextBox> smartWords          = new List<TextBox>();
-        List<RichTextBox> smartWordsValue = new List<RichTextBox>();
-        List<Panel> panels                = new List<Panel>();
-        List<Panel> yellowPanels          = new List<Panel>();
-        List<Panel> YPs                   = new List<Panel>(); // YPs - yellow panels
-        List<Graphics> grs                = new List<Graphics>();
-        List<Button> buttons              = new List<Button>();
-        List<string> Values               = new List<string>();
-        List<List<dynamic>> saveElems     = new List<List<dynamic>>(); // elems - elements
+                FormInfo        FI                = new FormInfo(); // FI - Form Info
+               List<TextBox>    smartWords       = new List<TextBox>();
+              List<RichTextBox> smartWordsValue = new List<RichTextBox>();
+             List<Panel>        panels         = new List<Panel>();
+            List<Panel>         yellowPanels  = new List<Panel>();
+           List<Panel>          YPs          = new List<Panel>();     // YPs - yellow panels
+          List<Button>          buttons     = new List<Button>();
+         List<string>           Values     = new List<string>();
+        List<List<string>>      saveElems = new List<List<string>>(); // elems - elements
 
         string searchText;
 
         int actualIndexForSW = 1; // SW - Smart Words // thanks captain
         int randNum          = 0;
-        int maxPW            = 0; // PW - Panel Width
         Random random        = new Random();
 
-        bool isGrowing       = true;
-        bool TFPA            = false; // timer for panel anim
-
-        public Form1()
+        public FormMain()
         {
             InitializeComponent();
         }
 
         void Form1_Load(object sender, EventArgs e)
         {
-            maxPW = Width - 55;
+            QuantityOfSymbols QOSforWords = new QuantityOfSymbols(false); // QOS - Quantity Of Symbols
+            QuantityOfSymbols QOSforValues = new QuantityOfSymbols(false);
 
             string words = Convert.ToString(Settings.Default["words"]);
             string values = Convert.ToString(Settings.Default["values"]);
-            string text = "";
-            string symbolsCombination = "";
+            string numberForCounts = "";
 
-            int symbolsCombinationCount = 0;
+            int indexForValues = 0;
 
-            foreach (char elV in values) {
-                if ((elV == '/' && symbolsCombination == "") ||
-                    (elV == '&' && symbolsCombination == "/") ||
-                    (elV == '/' && symbolsCombination == "/&"))
-                {
-                    symbolsCombination += Convert.ToString(elV);
-                    if (symbolsCombination == "/&/") {
-                        symbolsCombination = "";
-                        Values.Add(text);
-                        text = "";
+            for (int i = 0; i < values.Length; i++) {  // elV - elements of values
+                if (QOSforValues.numberRecorded) {
+                    Values.Add(values.Substring(i, QOSforValues.count));
+                    i += QOSforValues.count - 1;
+                    QOSforValues.fillingOut(0, false);
+                } else {
+                    if (values[i] != ' ') { numberForCounts += values[i]; }
+                    else { 
+                        QOSforValues.numberRecorded = true;
+                        QOSforValues.count = Convert.ToInt32(numberForCounts);
+                        numberForCounts = "";
                     }
-                } else { text += elV; }
+                }
             }
 
-            foreach (char elW in words) {
-                if ((elW == '/' && symbolsCombination == "") || 
-                    (elW == '&' && symbolsCombination == "/") || 
-                    (elW == '/' && symbolsCombination == "/&")) {
-
-                    symbolsCombination += Convert.ToString(elW);
-                    if (symbolsCombination == "/&/") {
-                        symbolsCombination = "";
-                        CreateNewWord(text, Values[symbolsCombinationCount]);
-                        symbolsCombinationCount++;
-                        text = "";
-                    }
+            for (int i = 0; i < words.Length; i++) {
+                if (QOSforWords.numberRecorded) {
+                    createNewWord(words.Substring(i, QOSforWords.count), Values[indexForValues]);
+                    i += QOSforWords.count - 1;
+                    QOSforWords.fillingOut(0, false);
+                    indexForValues++;
                 } else {
-                    text += elW;
+                    if (words[i] != ' ') { 
+                        numberForCounts += words[i]; 
+                    }
+                    else {
+                        QOSforWords.numberRecorded = true;
+                        QOSforWords.count = Convert.ToInt32(numberForCounts);
+                        numberForCounts = "";
+                    }
                 }
             }
         }
 
-        void CreateNewWord(string textForTB, string textForRTB)
+        void createNewWord(string textForTB, string textForRTB)
         {
-                     Button button_delete        = new Button();
-                      TextBox tb                = new TextBox();
-                       RichTextBox rtb         = new RichTextBox();
-                        Panel newPanel        = new Panel();
-                         Panel yellowPanel   = new Panel();
+                      Button button_delete        = new Button();
+                       TextBox tb                = new TextBox();
+                        RichTextBox rtb         = new RichTextBox();
+                         Panel newPanel        = new Panel();
+                          Panel yellowPanel   = new Panel();
 
-                         button_delete.Width = 46;
-                        button_delete.Height  = 40;
-                       tb.Width                = 150;
-                      tb.Height                 = 22;
-                     rtb.Width                   = 320;
-                    rtb.Height                    = 40;
-                   newPanel.Width                  = Width - 49;
-                  newPanel.Height                   = 50;
-                 yellowPanel.Width                   = 0;
-                yellowPanel.Height                    = 50;
-               tb.Text                                 = textForTB;
-              rtb.Text                                  = textForRTB;
-             button_delete.Text                          = "Delete";
-            yellowPanel.BackColor                         = Color.FromArgb(255, 217, 25);
+                          button_delete.Width = 46;
+                         button_delete.Height  = 40;
+                        tb.Width                = 150;
+                       tb.Height                 = 22;
+                      rtb.Width                   = 320;
+                     rtb.Height                    = 40;
+                    newPanel.Width                  = Width - 49;
+                   newPanel.Height                   = 50;
+                  yellowPanel.Width                   = 0;
+                 yellowPanel.Height                    = 50;
+                tb.Text                                 = textForTB;
+               rtb.Text                                  = textForRTB;
+              button_delete.Text                          = "Delete";
+             yellowPanel.BackColor                         = Color.FromArgb(255, 217, 25);
+            rtb.Font                                        = new Font(rtb.Font.FontFamily, 10f);
 
             if (randNum == 1) randNum = random.Next(2, 4);
             else if (randNum == 2) { randNum = random.Next(1, 3); if (randNum == 2) randNum = 3; }
@@ -307,7 +306,7 @@ namespace SmartWord
 
         void ButtonAdd_Click(object sender, EventArgs e)
         {
-            CreateNewWord(null, null);
+            createNewWord(null, null);
         }
 
         void Button_save_Click(object sender, EventArgs e)
@@ -320,17 +319,18 @@ namespace SmartWord
             for (int i = 0; i < smartWords.Count; i++) {
                 if (smartWords[i].Text.Trim() != "" || smartWordsValue[i].Text.Trim() != "") {
                     indexForSE++;
-                    saveElems.Add(new List<dynamic>());
+                    saveElems.Add(new List<string>());
                     saveElems[indexForSE].Add(smartWords[i].Text);
                     saveElems[indexForSE].Add(smartWordsValue[i].Text);
                 }
             }
 
             for (int i = 0; i < saveElems.Count; i++) {
-                Settings.Default["words"] += Convert.ToString(saveElems[i][0]) + "/&/";
-                Settings.Default["values"] += Convert.ToString(saveElems[i][1]) + "/&/";
+                Settings.Default["words"] += saveElems[i][0].Length + " " + saveElems[i][0];
+                Settings.Default["values"] += saveElems[i][1].Length + " " + saveElems[i][1];
             }
 
+            saveElems.Clear();
             Settings.Default.Save();
         }
 
@@ -343,7 +343,6 @@ namespace SmartWord
 
         void timer_for_search_Tick(object sender, EventArgs e)
         {
-            string str;
             if (search.Text != "") {
                 searchText = MakeWordsSmaller(search.Text);
                 for (int i = 0; i < smartWords.Count; i++) {
@@ -378,7 +377,6 @@ namespace SmartWord
                 timer_for_search.Enabled = false;
                 foreach (Panel panel in YPs) {
                     panel.Width = 0;
-                    isGrowing = true;
                 }
                 YPs = new List<Panel>();
             }
@@ -422,6 +420,37 @@ namespace SmartWord
             }
 
             actualIndexForSW--;
+        }
+
+        private void info_Click(object sender, EventArgs e)
+        {
+            FI.Show();
+        }
+
+        private void info_MouseEnter(object sender, EventArgs e)
+        {
+            info.ForeColor = Color.White;
+        }
+
+        private void info_MouseLeave(object sender, EventArgs e)
+        {
+            info.ForeColor = Color.Black;
+        }
+    }
+
+    class QuantityOfSymbols
+    {
+        public QuantityOfSymbols(bool NR) { numberRecorded = NR; } // NR - number recorded
+
+        public int count = 0;
+        public bool numberRecorded;
+    }
+
+    static class ExtensionForQOS
+    {
+        public static void fillingOut(this QuantityOfSymbols QOS, int num, bool NR) {
+            QOS.count = num;
+            QOS.numberRecorded = NR;
         }
     }
 }
